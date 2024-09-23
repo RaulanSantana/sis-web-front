@@ -1,0 +1,27 @@
+.cabecalho {
+    display: flex; /* Define um container flexível */
+    justify-content: space-between; /* Espaço entre os itens para posicionar um à esquerda e outro à direita */
+    align-items: center; /* Centraliza verticalmente os itens */
+    background: linear-gradient(to bottom, #093855 95%, #00CC66 5%);
+    padding: 20px;
+    color: white;
+}
+
+.right-section {
+    display: flex;
+    align-items: center; 
+}
+
+.right-section p {
+    margin-right: 15px; 
+}
+
+.cabecalho i {
+    margin: 0 10px; 
+    font-size: 20px;
+    color: white;
+}
+
+.cabecalho .fa-search {
+    margin-left: 100px; 
+}

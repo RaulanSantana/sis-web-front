@@ -1,0 +1,80 @@
+.reservas-container-menu {
+  width: 70%; 
+  max-width: 1200px; 
+  padding: 30px; 
+  /* border: 1px solid #e6e6e6;  */
+  border-radius: 8px; 
+  background-color: #fff; 
+  margin:  auto auto;
+ 
+}
+
+
+.reservas-lista li {
+  display: flex;
+  align-items: center;
+  /* background-color: #f9f9f9; */
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+  transition: transform 0.3s ease;
+}
+
+.reservas-lista li img {
+  width: 60px;
+  height: 60px;
+  margin-right: 15px;
+  flex-shrink: 0;
+}
+
+.reservas-lista li p {
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.reservas-lista li:hover {
+  transform: scale(1.05);
+}
+
+.reserva-container {
+
+  width: 70%; 
+  max-width: 1200px; 
+  padding: 20px; 
+
+  border-radius: 8px; 
+  background-color: #fefefe;
+  transform: translateX(200px);
+  margin: 30px auto;
+ 
+}
+
+.horario-container {
+  display: flex; /* Usar flexbox */
+  justify-content: space-between; /* Espaçar os campos igualmente */
+  width: 100%; /* Largura total */
+}
+
+.horario-item {
+  width: 48%; /* Largura dos campos, ajustável conforme necessidade */
+  margin-bottom: 10px; /* Espaçamento inferior */
+}
+
+
+.reservas-title  {
+  padding-top: auto;
+  text-align: left;
+  margin-left: 160px;
+  color: #093855;
+}
+.reservas-title h1 {
+  font-size: 25px;
+}
+
+.reservas-title a {
+  font-size: 16px;
+  text-decoration: none;
+  color: #093855;
+}

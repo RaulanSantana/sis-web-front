@@ -1,0 +1,39 @@
+.calendar-container {
+    width: 100%;
+    text-align: center;
+    transform: translateX(80px);
+  }
+  
+  .calendar-container h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #093855;
+  }
+  
+  .day-box {
+    background-color: #FEF7FF;
+    padding: 20px;
+    border-radius: 8px;
+
+    text-align: left;
+    font-size: 12px;
+    color: #333;
+  }
+  
+  .day-box h2 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .day-box .date {
+    font-size: 16px;
+    color: #666;
+  }
+  
+  .day-box:hover {
+    background-color: #e6f7ff;
+    cursor: pointer;
+    transition: 0.3s ease;
+  }
+  

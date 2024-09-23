@@ -1,0 +1,102 @@
+/* CSS */
+.menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100%;
+  background-color: #E6E6EB;
+  color: #093855;
+  overflow: hidden;
+  transition: transform 0.1s ease;
+  transform: translateX(-170px);
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  z-index: 1000;
+}
+.menu-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  text-decoration: none; /* Remove underline do link */
+  color: inherit; /* Herda a cor do texto */
+}
+
+.menu.open {
+  transform: translateX(0);
+}
+
+.menu-hamburger {
+
+  background-color: #E6E6EB;
+}
+
+.home-icon {
+  padding: auto;
+  width: 90%;
+  height: 90%;
+
+ 
+}
+
+.menu-icon-small {
+  margin-left: 185px;
+  margin-bottom:px;
+  margin-top: 20px;
+  width: 50px;
+  height: 50px;
+}
+
+.menu-content {
+  display: flex;
+  flex-direction: column;
+
+  padding: 10px;
+}
+
+.menu-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  margin-left: 0px;
+}
+
+.menu-content-complete ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  margin-left: 170px;
+  margin-top: 67px;
+}
+
+
+.menu-content ul li {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+  cursor: pointer;
+  width: 100%;
+}
+
+.menu-content ul li img {
+  width: 30px;
+  height: 30px;
+  padding-right: 15px;
+ 
+  
+
+  
+}
+
+.menu-content ul li:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.menu-text {
+  display: inline;
+
+}
