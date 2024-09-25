@@ -14,6 +14,7 @@
   flex-direction: column;
   align-content: center;
   z-index: 1000;
+  overflow: auto;
 }
 .menu-item {
   display: flex;
@@ -51,6 +52,7 @@
 .menu-content {
   display: flex;
   flex-direction: column;
+  
 
   padding: 10px;
 }

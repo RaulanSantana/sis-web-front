@@ -77,17 +77,16 @@ const SlideMenu = () => {
               {isOpen && <span className="menu-text">Documentos Digitais</span>}
             </li>
             <li>
+            <Link to="/reservas" className="menu-item" onClick={handleMouseLeave}>
+              <img src={salaIcon} alt="Reservas de Sala" className="menu-icon" />    
+              {isOpen && <span className="menu-text">Reservas de Sala</span>}        
+              </Link>
+            </li>
+            <li>
               <img src={driverIcon} alt="Meu Drive" className="menu-icon" />
               {isOpen && <span className="menu-text">Meu Drive</span>}
             </li>
-            <li>
-            <Link to="/reservas" className="menu-item" onClick={handleMouseLeave}>
-              <img src={salaIcon} alt="Reservas de Sala" className="menu-icon" />
-              
-              {isOpen && <span className="menu-text">Reservas de Sala</span>}
            
-              </Link>
-            </li>
           </ul>
         </div>
       </div>

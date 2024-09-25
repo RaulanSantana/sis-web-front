@@ -1,3 +1,6 @@
+//MENU PRINCIPAL
+
+
 import Header from "../../../layouts/Header/Header";
 import rapa from "../../../assets/images/rapa.png";
 import rli from "../../../assets/images/rli.png";
@@ -53,10 +56,12 @@ function Reservas() {
                  
                 </li>
                 </Link>
+                <Link to="/minhas_reservas">
                 <li>
                   <img src={mr} alt="Minhas reservas" />
                   <p>Minhas Reservas</p>
                 </li>
+                </Link>
               </ul>
             </div>
           </Col>

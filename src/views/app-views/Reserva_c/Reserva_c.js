@@ -1,3 +1,6 @@
+//Reserva de Laboratórios de Informática
+
+
 import React from 'react';
 import { Form, Input, Select, Button, message, Row, Col } from 'antd';
 import Header from '../../../layouts/Header/Header';
@@ -7,6 +10,7 @@ import formAlert from '../../../assets/images/form-alert.png'
 
 function Reserva_c() {
   const [form] = Form.useForm();
+  const [horariosDisponiveis, setHorariosDisponiveis] = React.useState([]);
 
   const onFinish = (values) => {
     console.log('Valores enviados:', values);
@@ -15,6 +19,26 @@ function Reserva_c() {
 
   const onFinishFailed = (errorInfo) => {
     console.log('Falha no envio:', errorInfo);
+  };
+
+  const handleTurno = (turno) => {
+    let horarios = {
+      'manhã': ['08:00', '09:00', '10:00', '11:00','12:00'],
+      'tarde': ['13:00', '14:00', '15:00', '16:00', '17:00'],
+      'noite': ['19:00', '20:00', '21:00', '22:00'],
+    };
+
+    setHorariosDisponiveis(horarios[turno] || []);
+
+    
+    if (horarios[turno]) {
+      form.setFieldsValue({
+        horarioInicio: horarios[turno][0],
+        horarioFim: horarios[turno][horarios[turno].length - 1],
+      });
+    } else {
+      form.resetFields(['horarioInicio', 'horarioFim']);
+    }
   };
 
   return (
@@ -51,8 +75,21 @@ function Reserva_c() {
                 Campo obrigatório <img src={formAlert} alt="Alerta" style={{ width: 10, marginLeft: 2 }} />
               </span>}]}
             >
-              <Select mode="multiple" placeholder="Selecione o Sofware">
+              <Select
+               mode="tags"
+                // mode="multiple"
+                placeholder="Selecione o Sofware"
+                allowClear
+               
+                
+                >
                 <Select.Option value="visualcode">Visual studio code</Select.Option>
+                <Select.Option value="anaconda">Anaconda</Select.Option>
+                <Select.Option value="3dstudio">3D Studio Max</Select.Option>
+                <Select.Option value="autocad">Auto CAD</Select.Option>
+                <Select.Option value="revit">Revit</Select.Option>
+                <Select.Option value="scateup">Scate UP</Select.Option>
+
                 
               </Select>
 
@@ -60,6 +97,8 @@ function Reserva_c() {
             <Form.Item label="Equipamentos a ser utilizados na aula">
               <Select mode="multiple" placeholder="Selecione os equipamentos">
                 <Select.Option value="roteador">Roteador TP-Link</Select.Option>
+                <Select.Option value="caixa_de_som">Caixa de som</Select.Option>
+                <Select.Option value="polycom">Polycom</Select.Option>
               
               </Select>
             </Form.Item>
@@ -84,11 +123,9 @@ function Reserva_c() {
             <Form.Item 
               label="Turno"
               name="turno" 
-              rules={[{ required: true, message: <span>
-                Campo obrigatório <img src={formAlert} alt="Alerta" style={{ width: 10, marginLeft: 2 }} />
-              </span>}]}
+              rules={[{ required: true, message: 'Campo obrigatório' }]}
             >
-              <Select placeholder="Selecione o turno"> 
+              <Select placeholder="Selecione o turno" onChange={handleTurno}> 
                 <Select.Option value="manhã">Manhã</Select.Option>
                 <Select.Option value="tarde">Tarde</Select.Option>
                 <Select.Option value="noite">Noite</Select.Option>
@@ -99,25 +136,33 @@ function Reserva_c() {
                 label="Horário Início" 
                 className="horario-item"
                 name="horarioInicio" 
-                rules={[{ required: true, message: <span>
-                  Campo obrigatório <img src={formAlert} alt="Alerta" style={{ width: 10, marginLeft: 2 }} />
-                </span>}]}
+                rules={[{ required: true, message: 'Campo obrigatório' }]}
               >
-                <Input type="time" />
+                <Select placeholder="Selecione o horário de início">
+                  {horariosDisponiveis.map(horario => (
+                    <Select.Option key={horario} value={horario}>
+                      {horario}
+                    </Select.Option>
+                  ))}
+                </Select>
               </Form.Item>
               <Form.Item 
                 label="Horário Fim" 
                 className="horario-item"
                 name="horarioFim" 
-                rules={[{ required: true, message: <span>
-                  Campo obrigatório <img src={formAlert} alt="Alerta" style={{ width: 10, marginLeft: 2 }} />
-                </span>}]}
+                rules={[{ required: true, message: 'Campo obrigatório' }]}
               >
-                <Input type="time" />
+                <Select placeholder="Selecione o horário de fim">
+                  {horariosDisponiveis.map(horario => (
+                    <Select.Option key={horario} value={horario}>
+                      {horario}
+                    </Select.Option>
+                  ))}
+                </Select>
               </Form.Item>
             </div>
           
-            <Form.Item label="Realizar a reserva até o final do semestre para todo o dia da semana selecionado ?" name="validadeReserva">
+            <Form.Item label="Realizar a reserva até o final do semestre para todo o dia da semana selecionado?" name="validadeReserva">
               <Select placeholder="Selecione o dia da semana">
                 <Select.Option value="segunda">Segunda</Select.Option>
                 <Select.Option value="terca">Terça</Select.Option>
