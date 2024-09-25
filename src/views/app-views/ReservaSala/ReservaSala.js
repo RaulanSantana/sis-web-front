@@ -1,4 +1,4 @@
-//Reserva de Laboratórios de Informática
+//Reserva de Sala de Aula, Auditórios, Plenário, Salão de Atos 
 
 
 import React from 'react';
@@ -7,8 +7,8 @@ import Header from '../../../layouts/Header/Header';
 import { Link } from 'react-router-dom';
 import '../Reservas/Reservas.css';
 import formAlert from '../../../assets/images/form-alert.png'
-
-function Reserva_c() {
+;
+function ReservaSala() {
   const [form] = Form.useForm();
   const [horariosDisponiveis, setHorariosDisponiveis] = React.useState([]);
 
@@ -43,13 +43,12 @@ function Reserva_c() {
 
   return (
     <div>
-      <Header />
-
-      <div className="reservas-title">
-      <p>
-    <Link to="/reservas" >Reservas</Link> &gt;  Reserva de Laboratórios de Informática
-  </p>
-  <h1> <Link to="/reservas" >&#8592; </Link> Reserva de Laboratórios de Informática</h1>
+    <Header />
+    <div className="reservas-title">
+    <p>
+  <Link to="/reservas">Reservas</Link> &gt; Reserva de Sala de Aula, Auditórios, Plenário, Salão de Atos 
+</p>
+<h1> <Link to="/reservas" >&#8592; </Link> Reserva de Sala de Aula, Auditórios, Plenário, Salão de Atos </h1>
 </div>
       <Form
         form={form}
@@ -69,37 +68,25 @@ function Reserva_c() {
               <Input placeholder='Digite a disciplina' />
             </Form.Item>
             <Form.Item 
-              label="Software" 
-              name="software" 
+              label="Tipo de Reserva" 
+              name="tipoReserva" 
               rules={[{ required: true, message: <span>
                 Campo obrigatório <img src={formAlert} alt="Alerta" style={{ width: 10, marginLeft: 2 }} />
               </span>}]}
             >
-              <Select
-               mode="tags"
-                // mode="multiple"
-                placeholder="Selecione o Sofware"
-                allowClear
-               
-                
-                >
-                <Select.Option value="visualcode">Visual studio code</Select.Option>
-                <Select.Option value="anaconda">Anaconda</Select.Option>
-                <Select.Option value="3dstudio">3D Studio Max</Select.Option>
-                <Select.Option value="autocad">Auto CAD</Select.Option>
-                <Select.Option value="revit">Revit</Select.Option>
-                <Select.Option value="scateup">Scate UP</Select.Option>
-
-                
+              <Select placeholder="Selecione o tipo de reserva">
+                <Select.Option value="sala_de_aula">Sala de aula</Select.Option>
+                <Select.Option value="auditorios">Auditórios</Select.Option>
+                <Select.Option value="plenario">Plenário</Select.Option>
+                <Select.Option value="salao_de_atos">Salão de atos</Select.Option>
               </Select>
-
             </Form.Item>
-            <Form.Item label="Equipamentos a ser utilizados na aula">
+            <Form.Item label="Equipamentos">
               <Select mode="multiple" placeholder="Selecione os equipamentos">
-                <Select.Option value="roteador">Roteador TP-Link</Select.Option>
-                <Select.Option value="caixa_de_som">Caixa de som</Select.Option>
                 <Select.Option value="polycom">Polycom</Select.Option>
-              
+                <Select.Option value="caixa_de_som">Caixa de som</Select.Option>
+                <Select.Option value="projetor">Projetor</Select.Option>
+                <Select.Option value="tv">TV</Select.Option>
               </Select>
             </Form.Item>
             <Form.Item label="Observação">
@@ -162,7 +149,7 @@ function Reserva_c() {
               </Form.Item>
             </div>
           
-            <Form.Item label="Realizar a reserva até o final do semestre para todo o dia da semana selecionado?" name="validadeReserva">
+            <Form.Item label="Realizar a reserva até o final do semestre para todo o dia da semana selecionado ?" name="validadeReserva">
               <Select placeholder="Selecione o dia da semana">
                 <Select.Option value="segunda">Segunda</Select.Option>
                 <Select.Option value="terca">Terça</Select.Option>
@@ -179,4 +166,4 @@ function Reserva_c() {
   );
 }
 
-export default Reserva_c;
+export default ReservaSala;

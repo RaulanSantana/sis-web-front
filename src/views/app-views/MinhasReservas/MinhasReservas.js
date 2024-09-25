@@ -18,7 +18,7 @@ const statusOptions = [
 
 ];
 
-function Minhas_reservas() {
+function MinhasReservas() {
   const [selectedLocal, setSelectedLocal] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -286,4 +286,4 @@ function Minhas_reservas() {
   );
 }
 
-export default Minhas_reservas;
+export default MinhasReservas;

@@ -4,7 +4,7 @@ import Header from '../../../layouts/Header/Header';
 import { Link } from 'react-router-dom';
 import { UploadOutlined } from '@ant-design/icons';
 
-function Reserva_b() {
+function ReservaLabhab() {
   const [form] = Form.useForm();
   const [horariosDisponiveis, setHorariosDisponiveis] = React.useState([]);
 
@@ -42,9 +42,9 @@ function Reserva_b() {
       <Header />
       <div className="reservas-title">
         <p>
-          <Link to="/reservas">Reservas</Link> &gt; Reserva Laboratório Habilidades
+          <Link to="/reservas">Reservas</Link> &gt; Reserva Laboratório de Habilidades
         </p>
-        <h1><Link to="/reservas">&#8592; </Link>Reserva Laboratório Habilidades</h1>
+        <h1><Link to="/reservas">&#8592; </Link>Reserva Laboratório de Habilidades</h1>
       </div>
       <Form
         form={form}
@@ -70,7 +70,7 @@ function Reserva_b() {
                 <Select.Option value="laboratorio_quimica">Laboratório de Química</Select.Option>
                 <Select.Option value="laboratorio_farmacogonozia">Laboratório de Farmacognosia</Select.Option>
                 <Select.Option value="laboratorio_instrumental">Laboratório de Instrumental</Select.Option>
-                {/* Outras opções... */}
+              
               </Select>
             </Form.Item>
             <Form.Item label="Anexar POP">
@@ -153,4 +153,4 @@ function Reserva_b() {
   );
 }
 
-export default Reserva_b;
+export default ReservaLabhab;

@@ -1,16 +1,24 @@
 import './Header.css';
 
-function Header() {
+function Header({ setUsuario }) {
+  const handleSetUsuario = () => {
+    const usuario = "usuariocomum"; 
+    setUsuario(usuario); 
+  };
+  
+
   return (
     <div className='cabecalho'>
-      <i className="fas fa-search"></i> {/* Ícone de lupa na extrema esquerda */}
+      <i className="fas fa-search"></i>
+      <button onClick={handleSetUsuario}>Set</button>
       <div className="right-section">
-        <i className="fas fa-envelope"></i> {/* Ícone de carta */}
-        <i className="fas fa-bell"></i>     {/* Ícone de sino */}
+        <i className="fas fa-envelope"></i>
+        <i className="fas fa-bell"></i>
         <div className="user-info">
-          <p>Nome do Usuario</p>
-          <p className='mat'>Matricula: 202012345</p>
+          <p>Nome do Usuário</p>
+          <p className='mat'>Matrícula: 202012345</p>
         </div>
+       
       </div>
     </div>
   );

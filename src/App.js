@@ -8,10 +8,14 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import SlideMenu from './layouts/Slidemenu/Slidemenu';
 import Reservas from './views/app-views/Reservas/Reservas';
 import Dashboard from './views/app-views/Dashboard/Dashboard';
-import Reserva_a from './views/app-views/Reserva_a/Reserva_a';
-import Reserva_b from './views/app-views/Reserva_b/Reserva_b';
-import Reserva_c from './views/app-views/Reserva_c/Reserva_c';
-import Minhas_reservas from './views/app-views/Minhas_reservas/Minhas_reservas';
+import MinhasReservas from './views/app-views/MinhasReservas/MinhasReservas';
+import AprovReservas from './views/app-views/AprovReservas/AprovReservas';
+import ReservaLabhab from './views/app-views/ReservaLabhab/ReservaLabhab';
+import ReservaLabin from './views/app-views/ReservaLabin/ReservaLabin';
+import ReservaSala from './views/app-views/ReservaSala/ReservaSala';
+import SoftwaresInstalados from './views/app-views/SoftwareInstalados/SoftwareInstalados';
+import AdicionarSoftware from './views/app-views/AdicionarSoftware/AdicionarSoftware';
+import Agenda from './views/app-views/Agenda/Agenda';
 
 
 function App() {
@@ -20,11 +24,15 @@ function App() {
       <SlideMenu />
       <Routes>
         <Route path="/" element={<Dashboard />} />
-        <Route path="/reservas" element={<Reservas />} />
-        <Route path="/reserva_a" element={<Reserva_a/>}/>
-        <Route path="/reserva_b" element={<Reserva_b/>}/>
-        <Route path="/reserva_c" element={<Reserva_c/>}/>
-        <Route path="/minhas_reservas" element={<Minhas_reservas/>}/>
+        <Route path="/reservas" element={<Reservas/>} />
+        <Route path="/reserva_a" element={<ReservaLabhab/>}/>
+        <Route path="/reserva_b" element={<ReservaLabin/>}/>
+        <Route path="/reserva_c" element={<ReservaSala/>}/>
+        <Route path="/minhas_reservas" element={<MinhasReservas/>}/>
+        <Route path="/aprov_reservas" element={<AprovReservas/>}/>
+        <Route path="/softwares_instalados" element={<SoftwaresInstalados/>}/>
+        <Route path="/adicionarSoftware" element={<AdicionarSoftware/>}/>
+        <Route path="/agenda" element={<Agenda/>}/>
         
         
       </Routes>
