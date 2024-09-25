@@ -21,8 +21,8 @@ function SoftwaresInstalados() {
   const itemsPerPage = 10;
 
   const dataSource = [
-    { key: '1', bloco: 'A', laboratorio: 'Lab 1', software: 'Software A', quantidade: 5 },
-    { key: '2', bloco: 'B', laboratorio: 'Lab 2', software: 'Software B', quantidade: 3 },
+    { key: '1', bloco: 'A', laboratorio: 'c310 ', software: 'Visual Code A', quantidade: 5 },
+    { key: '2', bloco: 'A', laboratorio: 'c310 ', software: 'Anaconda B', quantidade: 3 },
     { key: '3', bloco: 'C', laboratorio: 'Lab 3', software: 'Software C', quantidade: 7 },
     { key: '4', bloco: 'D', laboratorio: 'Lab 4', software: 'Software D', quantidade: 2 },
     // Adicione mais itens conforme necessário para testar a paginação

@@ -1,12 +1,19 @@
 import React from 'react';
-import { Form, Select, Input, Button, message, Row, Col, Upload } from 'antd';
+import { useState } from 'react';
+import { Form, Select, Input, Button, message, Row, Col, Upload,Card} from 'antd';
 import Header from '../../../layouts/Header/Header';
 import { Link } from 'react-router-dom';
 import { UploadOutlined } from '@ant-design/icons';
+import { InfoCircleOutlined } from '@ant-design/icons';
 
 function ReservaLabhab() {
   const [form] = Form.useForm();
   const [horariosDisponiveis, setHorariosDisponiveis] = React.useState([]);
+  const [showCard, setShowCard] = useState(false); 
+  
+  const handleInfoClick = () => {
+    setShowCard(!showCard); // Alterna a exibição do card
+  };
 
   const onFinish = (values) => {
     console.log('Valores enviados:', values);
@@ -44,8 +51,24 @@ function ReservaLabhab() {
         <p>
           <Link to="/reservas">Reservas</Link> &gt; Reserva Laboratório de Habilidades
         </p>
-        <h1><Link to="/reservas">&#8592; </Link>Reserva Laboratório de Habilidades</h1>
+        <h1>
+          <Link to="/reservas">&#8592; </Link> Reserva de Laboratórios de Habilidades
+          {/* Ícone de informação que, ao ser clicado, exibe o card */}
+          <InfoCircleOutlined 
+            style={{ marginLeft: 10, fontSize: '20px', cursor: 'pointer' }} 
+            onClick={handleInfoClick} 
+          />
+        </h1>
+            {/* Card que será exibido ao clicar no ícone */}
+      {showCard && (
+        <Card className="info-card" style={{ zIndex:"1001",position: 'absolute', top: '60px', right: '150px', width: 300 }}>
+          <p>Laboratórios de habilidades só podem ser reservados no mínimo 3 dias de antecedência.</p>
+          <Button type="primary" onClick={handleInfoClick}>Fechar</Button>
+        </Card> 
+      )}
       </div>
+      
+      
       <Form
         form={form}
         layout="vertical"

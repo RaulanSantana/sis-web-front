@@ -1,16 +1,15 @@
-//Reserva de Laboratórios de Informática
-
-
-import React from 'react';
-import { Form, Input, Select, Button, message, Row, Col } from 'antd';
+import React, { useState } from 'react';
+import { Form, Input, Select, Button, message, Row, Col, Card } from 'antd';
 import Header from '../../../layouts/Header/Header';
 import { Link } from 'react-router-dom';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import '../Reservas/Reservas.css';
-import formAlert from '../../../assets/images/form-alert.png'
+import formAlert from '../../../assets/images/form-alert.png';
 
 function ReservaLabin() {
   const [form] = Form.useForm();
-  const [horariosDisponiveis, setHorariosDisponiveis] = React.useState([]);
+  const [horariosDisponiveis, setHorariosDisponiveis] = useState([]);
+  const [showCard, setShowCard] = useState(false); 
 
   const onFinish = (values) => {
     console.log('Valores enviados:', values);
@@ -23,14 +22,13 @@ function ReservaLabin() {
 
   const handleTurno = (turno) => {
     let horarios = {
-      'manhã': ['08:00', '09:00', '10:00', '11:00','12:00'],
+      'manhã': ['08:00', '09:00', '10:00', '11:00', '12:00'],
       'tarde': ['13:00', '14:00', '15:00', '16:00', '17:00'],
       'noite': ['19:00', '20:00', '21:00', '22:00'],
     };
 
     setHorariosDisponiveis(horarios[turno] || []);
 
-    
     if (horarios[turno]) {
       form.setFieldsValue({
         horarioInicio: horarios[turno][0],
@@ -41,16 +39,36 @@ function ReservaLabin() {
     }
   };
 
+  const handleInfoClick = () => {
+    setShowCard(!showCard); // Alterna a exibição do card
+  };
+
   return (
     <div>
       <Header />
 
       <div className="reservas-title">
-      <p>
-    <Link to="/reservas" >Reservas</Link> &gt;  Reserva de Laboratórios de Informática
-  </p>
-  <h1> <Link to="/reservas" >&#8592; </Link> Reserva de Laboratórios de Informática</h1>
-</div>
+        <p>
+          <Link to="/reservas">Reservas</Link> &gt; Reserva de Laboratórios de Informática
+        </p>
+        <h1>
+          <Link to="/reservas">&#8592; </Link> Reserva de Laboratórios de Informática
+          {/* Ícone de informação que, ao ser clicado, exibe o card */}
+          <InfoCircleOutlined 
+            style={{ marginLeft: 10, fontSize: '20px', cursor: 'pointer' }} 
+            onClick={handleInfoClick} 
+          />
+        </h1>
+      </div>
+
+      {/* Card que será exibido ao clicar no ícone */}
+      {showCard && (
+        <Card className="info-card" style={{ zIndex:"1001",position: 'absolute', top: '60px', right: '150px', width: 300 }}>
+          <p>Laboratórios de informática só podem ser reservados no mínimo 7 dias de antecedência.</p>
+          <Button type="primary" onClick={handleInfoClick}>Fechar</Button>
+        </Card> 
+      )}
+
       <Form
         form={form}
         layout="vertical"
@@ -73,30 +91,23 @@ function ReservaLabin() {
               name="software"
             >
               <Select
-               mode="tags"
-                // mode="multiple"
+                mode="tags"
                 placeholder="Selecione o Sofware"
                 allowClear
-               
-                
-                >
+              >
                 <Select.Option value="visualcode">Visual studio code</Select.Option>
                 <Select.Option value="anaconda">Anaconda</Select.Option>
                 <Select.Option value="3dstudio">3D Studio Max</Select.Option>
                 <Select.Option value="autocad">Auto CAD</Select.Option>
                 <Select.Option value="revit">Revit</Select.Option>
                 <Select.Option value="scateup">Scate UP</Select.Option>
-
-                
               </Select>
-
             </Form.Item>
             <Form.Item label="Equipamentos a ser utilizados na aula">
               <Select mode="multiple" placeholder="Selecione os equipamentos">
                 <Select.Option value="roteador">Roteador TP-Link</Select.Option>
                 <Select.Option value="caixa_de_som">Caixa de som</Select.Option>
                 <Select.Option value="polycom">Polycom</Select.Option>
-              
               </Select>
             </Form.Item>
             <Form.Item label="Observação">
@@ -159,7 +170,7 @@ function ReservaLabin() {
               </Form.Item>
             </div>
           
-            <Form.Item label="Realizar a reserva até o final do semestre para todo o dia da semana selecionado?" name="validadeReserva">
+            <Form.Item  label="Realizar a reserva até o final do semestre para todo o dia da semana selecionado?" name="validadeReserva">
               <Select placeholder="Selecione o dia da semana">
                 <Select.Option value="segunda">Segunda</Select.Option>
                 <Select.Option value="terca">Terça</Select.Option>
