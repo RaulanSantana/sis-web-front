@@ -10,6 +10,7 @@ function ReservaLabin() {
   const [form] = Form.useForm();
   const [horariosDisponiveis, setHorariosDisponiveis] = useState([]);
   const [showCard, setShowCard] = useState(false); 
+  const [showSoftwareInfo, setShowSoftwareInfo] = useState(false); // Novo estado
 
   const onFinish = (values) => {
     console.log('Valores enviados:', values);
@@ -40,7 +41,11 @@ function ReservaLabin() {
   };
 
   const handleInfoClick = () => {
-    setShowCard(!showCard); // Alterna a exibição do card
+    setShowCard(!showCard); // Alterna a exibição do card de reservas
+  };
+
+  const handleSoftwareInfoClick = () => {
+    setShowSoftwareInfo(!showSoftwareInfo); // Alterna a exibição do card de software
   };
 
   return (
@@ -53,7 +58,6 @@ function ReservaLabin() {
         </p>
         <h1>
           <Link to="/reservas">&#8592; </Link> Reserva de Laboratórios de Informática
-          {/* Ícone de informação que, ao ser clicado, exibe o card */}
           <InfoCircleOutlined 
             style={{ marginLeft: 10, fontSize: '20px', cursor: 'pointer' }} 
             onClick={handleInfoClick} 
@@ -61,9 +65,8 @@ function ReservaLabin() {
         </h1>
       </div>
 
-      {/* Card que será exibido ao clicar no ícone */}
       {showCard && (
-        <Card className="info-card" style={{ zIndex:"1001",position: 'absolute', top: '60px', right: '150px', width: 300 }}>
+        <Card className="info-card" style={{ zIndex: "1001", position: 'absolute', top: '60px', right: '150px', width: 300 }}>
           <p>Laboratórios de informática só podem ser reservados no mínimo 7 dias de antecedência.</p>
           <Button type="primary" onClick={handleInfoClick}>Fechar</Button>
         </Card> 
@@ -90,18 +93,31 @@ function ReservaLabin() {
               label="Software" 
               name="software"
             >
-              <Select
-                mode="tags"
-                placeholder="Selecione o Sofware"
-                allowClear
-              >
-                <Select.Option value="visualcode">Visual studio code</Select.Option>
-                <Select.Option value="anaconda">Anaconda</Select.Option>
-                <Select.Option value="3dstudio">3D Studio Max</Select.Option>
-                <Select.Option value="autocad">Auto CAD</Select.Option>
-                <Select.Option value="revit">Revit</Select.Option>
-                <Select.Option value="scateup">Scate UP</Select.Option>
-              </Select>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Select
+                  mode="tags"
+                  placeholder="Selecione o Software"
+                  allowClear
+                  style={{ flex: 1 }}
+                >
+                  <Select.Option value="visualcode">Visual Studio Code</Select.Option>
+                  <Select.Option value="anaconda">Anaconda</Select.Option>
+                  <Select.Option value="3dstudio">3D Studio Max</Select.Option>
+                  <Select.Option value="autocad">Auto CAD</Select.Option>
+                  <Select.Option value="revit">Revit</Select.Option>
+                  <Select.Option value="scateup">Scate UP</Select.Option>
+                </Select>
+                <InfoCircleOutlined 
+                  style={{ marginLeft: 10, fontSize: '20px', cursor: 'pointer' }} 
+                  onClick={handleSoftwareInfoClick} 
+                />
+              </div>
+              {showSoftwareInfo && (
+                <Card className="info-card" style={{ marginTop: 10 }}>
+                  <p>Software é um conjunto de instruções que permitem que um computador realize tarefas específicas. Inclui aplicativos, sistemas operacionais e ferramentas de desenvolvimento.</p>
+                  <Button type="primary" onClick={handleSoftwareInfoClick}>Fechar</Button>
+                </Card>
+              )}
             </Form.Item>
             <Form.Item label="Equipamentos a ser utilizados na aula">
               <Select mode="multiple" placeholder="Selecione os equipamentos">
@@ -170,7 +186,7 @@ function ReservaLabin() {
               </Form.Item>
             </div>
           
-            <Form.Item  label="Realizar a reserva até o final do semestre para todo o dia da semana selecionado?" name="validadeReserva">
+            <Form.Item label="Realizar a reserva até o final do semestre para todo o dia da semana selecionado?" name="validadeReserva">
               <Select placeholder="Selecione o dia da semana">
                 <Select.Option value="segunda">Segunda</Select.Option>
                 <Select.Option value="terca">Terça</Select.Option>

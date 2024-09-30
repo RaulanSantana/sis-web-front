@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Table, Button, Dropdown, Menu, Checkbox } from 'antd';
+import { Table, Button, Dropdown, Menu, Checkbox, Input } from 'antd'; // Adicione Input aqui
 import Header from '../../../layouts/Header/Header';
 import { Link } from 'react-router-dom';
 import '../Reservas/Reservas.css';
@@ -18,6 +18,7 @@ const localOptions = [
 function SoftwaresInstalados() {
   const [selectedLocal, setSelectedLocal] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchLaboratorio, setSearchLaboratorio] = useState(''); // Estado para o filtro de laboratório
   const itemsPerPage = 10;
 
   const dataSource = [
@@ -29,7 +30,8 @@ function SoftwaresInstalados() {
   ];
 
   const filteredDataSource = dataSource.filter(item =>
-    selectedLocal.length === 0 || selectedLocal.includes(item.bloco)
+    (selectedLocal.length === 0 || selectedLocal.includes(item.bloco)) &&
+    (item.laboratorio.toLowerCase().includes(searchLaboratorio.toLowerCase())) // Adiciona filtro de pesquisa
   );
 
   const totalItems = filteredDataSource.length;
@@ -91,7 +93,17 @@ function SoftwaresInstalados() {
       align: 'center',
     },
     {
-      title: 'Laboratório',
+      title: (
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <span style={{ marginRight: 8 }}>Laboratório</span>
+          <Input
+            placeholder="Pesquisar"
+            value={searchLaboratorio}
+            onChange={(e) => setSearchLaboratorio(e.target.value)} // Atualiza o estado ao digitar
+            style={{ width: 120 }}
+          />
+        </div>
+      ),
       dataIndex: 'laboratorio',
       key: 'laboratorio',
       width: 40,
@@ -120,7 +132,7 @@ function SoftwaresInstalados() {
             <Menu>
               <Menu.Item key="edit">
                 <Link to="/adicionarSoftware">
-                <Button type="link">Editar</Button>
+                  <Button type="link">Editar</Button>
                 </Link>
               </Menu.Item>
               <Menu.Item key="delete">
@@ -148,10 +160,10 @@ function SoftwaresInstalados() {
         <h1>
           <Link to="/reservas">&#8592; </Link> Software Instalados
         </h1>
-        <div style={{display: 'flex'}}>
-            <Link to="/adicionarSoftware">
-        <Button type="primary" htmlType="submit" style={{ marginLeft:"800px" }}>Adicionar Software</Button>
-        </Link>
+        <div style={{ display: 'flex' }}>
+          <Link to="/adicionarSoftware">
+            <Button type="primary" htmlType="submit" style={{ marginLeft: "800px" }}>Adicionar Software</Button>
+          </Link>
         </div>
       </div>
 
