@@ -4,7 +4,8 @@ import Header from '../../../layouts/Header/Header';
 import { Link } from 'react-router-dom';
 import axios from 'axios'; 
 import '../Reservas/Reservas.css';
-// import formAlert from '../../../assets/images/form-alert.png';
+import formAlert from '../../../assets/images/form-alert.png';
+import SlideMenu from '../../../layouts/Slidemenu/Slidemenu';
 
 function ReservaSala() {
   const [form] = Form.useForm();
@@ -85,18 +86,18 @@ function ReservaSala() {
             <Form.Item 
               label="Disciplina" 
               name="disciplina"
-              // rules={[{ required: true, message: <span>
-              //   Campo obrigatório <img src={formAlert} alt="Alerta" style={{ width: 10, marginLeft: 2 }} />
-              // </span>}]}
+              rules={[{ required: true, message: <span>
+                Campo obrigatório <img src={formAlert} alt="Alerta" style={{ width: 10, marginLeft: 2 }} />
+              </span>}]}
             >
               <Input placeholder='Digite a disciplina' />
             </Form.Item>
             <Form.Item 
               label="Tipo de Reserva" 
               name="tipo_reserva" 
-              // rules={[{ required: true, message: <span>
-              //   Campo obrigatório <img src={formAlert} alt="Alerta" style={{ width: 10, marginLeft: 2 }} />
-              // </span>}]}
+              rules={[{ required: true, message: <span>
+                Campo obrigatório <img src={formAlert} alt="Alerta" style={{ width: 10, marginLeft: 2 }} />
+              </span>}]}
             >
               <Select placeholder="Selecione o tipo de reserva">
                 <Select.Option value="sala de aula">Sala de aula</Select.Option>
@@ -105,6 +106,7 @@ function ReservaSala() {
                 <Select.Option value="salao de atos">Salão de atos</Select.Option>
               </Select>
             </Form.Item>
+            
             <Form.Item label="Equipamentos" name="equipamentos">
               <Select mode="multiple" placeholder="Selecione os equipamentos">
                 <Select.Option value="polycom">Polycom</Select.Option>
@@ -125,9 +127,9 @@ function ReservaSala() {
             <Form.Item 
               label="Data" 
               name="data"
-              // rules={[{ required: true, message: <span>
-              //   Campo obrigatório <img src={formAlert} alt="Alerta" style={{ width: 10, marginLeft: 2 }} />
-              // </span>}]}
+              rules={[{ required: true, message: <span>
+                Campo obrigatório <img src={formAlert} alt="Alerta" style={{ width: 10, marginLeft: 2 }} />
+              </span>}]}
             >
               <Input type="date" />
             </Form.Item>
@@ -135,7 +137,7 @@ function ReservaSala() {
               label="Turno"
               name="turno"
            
-              // rules={[{ required: true, message: 'Campo obrigatório' }]}
+              rules={[{ required: true, message: 'Campo obrigatório' }]}
             >
               <Select placeholder="Selecione o turno"  onChange={handleTurno}> 
                 <Select.Option value="manhã">Manhã</Select.Option>
@@ -148,7 +150,7 @@ function ReservaSala() {
                 label="Horário Início" 
                 className="horario-item"
                 name="hora_inicio" 
-                // rules={[{ required: true, message: 'Campo obrigatório' }]}
+                rules={[{ required: true, message: 'Campo obrigatório' }]}
               >
                 <Select placeholder="Selecione o horário de início">
                   {horariosDisponiveis.map(horario => (
@@ -162,7 +164,7 @@ function ReservaSala() {
                 label="Horário Fim" 
                 className="horario-item"
                 name="hora_fim" 
-                // rules={[{ required: true, message: 'Campo obrigatório' }]}
+                rules={[{ required: true, message: 'Campo obrigatório' }]}
               >
                 <Select placeholder="Selecione o horário de fim">
                   {horariosDisponiveis.map(horario => (
@@ -188,6 +190,7 @@ function ReservaSala() {
           </Col>
         </Row>
       </Form>
+      <SlideMenu/>
     </div>
   );
 }

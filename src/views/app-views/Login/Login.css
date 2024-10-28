@@ -1,0 +1,84 @@
+/* Login.css */
+
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #093855;
+    color: #61dafb;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+  }
+  
+  h2 {
+    font-size: 2em;
+    color: #61dafb;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .error {
+    color: #ff4d4f;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  
+  .form {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    background-color: #0c4d7b;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .input-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  label {
+    font-weight: bold;
+    color: #61dafb;
+    margin-bottom: 5px;
+  }
+  
+  input[type="email"],
+  input[type="password"] {
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #61dafb;
+    border-radius: 4px;
+    background-color: #f1f1f1;
+    color: #093855;
+  }
+  
+  input::placeholder {
+    color: #9baec8;
+  }
+  
+  .botaologar {
+    background-color: #61dafb;
+    color: #093855;
+    padding: 10px;
+    width: 100%;
+    border: none;
+    border-radius: 4px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  button[type="submit"]:hover {
+    background-color: #4db4db;
+  }
+  
+  button[type="submit"]:active {
+    background-color: #3a9ebb;
+  }
+  

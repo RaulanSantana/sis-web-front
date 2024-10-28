@@ -5,6 +5,9 @@ import Header from '../../../layouts/Header/Header';
 import { Link } from 'react-router-dom';
 import { UploadOutlined } from '@ant-design/icons';
 import { InfoCircleOutlined } from '@ant-design/icons';
+import SlideMenu from '../../../layouts/Slidemenu/Slidemenu';
+import formAlert from '../../../assets/images/form-alert.png';
+import axios from 'axios';
 
 function ReservaLabhab() {
   const [form] = Form.useForm();
@@ -12,13 +15,9 @@ function ReservaLabhab() {
   const [showCard, setShowCard] = useState(false); 
   
   const handleInfoClick = () => {
-    setShowCard(!showCard); // Alterna a exibição do card
+    setShowCard(!showCard); 
   };
 
-  const onFinish = (values) => {
-    console.log('Valores enviados:', values);
-    message.success('Reserva realizada com sucesso!');
-  };
 
   const onFinishFailed = (errorInfo) => {
     console.log('Falha no envio:', errorInfo);
@@ -36,13 +35,39 @@ function ReservaLabhab() {
     
     if (horarios[turno]) {
       form.setFieldsValue({
-        horarioInicio: horarios[turno][0],
-        horarioFim: horarios[turno][horarios[turno].length - 1],
+        hora_inicio: horarios[turno][0],
+        hora_fim: horarios[turno][horarios[turno].length - 1],
       });
     } else {
-      form.resetFields(['horarioInicio', 'horarioFim']);
+      form.resetFields(['hora_inicio', 'hora_fim']);
     }
   };
+
+  const onFinish = async (values) => {
+    try {
+      const formattedValues = {
+        disciplina: values.disciplina,
+        data: values.data,
+        turno: values.turno,
+        laboratorio: values.laboratorio,
+        anexar_pop: values.anexar_pop,
+        equipamentos: values.equipamentos ? values.equipamentos.join(', ') : null,
+        hora_inicio: values.hora_inicio, 
+        hora_fim: values.hora_fim,       
+        observacao: values.observacao,
+        reserva_dia: values.reserva_dia,
+      };
+      const response = await axios.post('http://localhost:8080/reservas-labhab/criar', formattedValues);
+      console.log('Resposta da API:', response.data);
+      message.success('Reserva realizada com sucesso!');
+      form.resetFields();
+    } catch (error) {
+      console.error('Erro ao criar reserva:', error.response ? error.response.data : error);
+      message.error('Erro ao realizar a reserva. Tente novamente.');
+    }
+   
+  };
+ 
 
   return (
     <div>
@@ -90,9 +115,9 @@ function ReservaLabhab() {
               rules={[{ required: true, message: 'Campo obrigatório' }]}
             >
               <Select placeholder="Selecione o tipo de reserva">
-                <Select.Option value="laboratorio_quimica">Laboratório de Química</Select.Option>
-                <Select.Option value="laboratorio_farmacogonozia">Laboratório de Farmacognosia</Select.Option>
-                <Select.Option value="laboratorio_instrumental">Laboratório de Instrumental</Select.Option>
+                <Select.Option value="laboratorio de quimica">Laboratório de Química</Select.Option>
+                <Select.Option value="laboratorio de armacogonozia">Laboratório de Farmacognosia</Select.Option>
+                <Select.Option value="laboratorio de instrumental">Laboratório de Instrumental</Select.Option>
               
               </Select>
             </Form.Item>
@@ -113,16 +138,19 @@ function ReservaLabhab() {
             <Form.Item 
               label="Data" 
               name="data"
-              rules={[{ required: true, message: 'Campo obrigatório' }]}
+              rules={[{ required: true, message: <span>
+                Campo obrigatório <img src={formAlert} alt="Alerta" style={{ width: 10, marginLeft: 2 }} />
+              </span>}]}
             >
               <Input type="date" />
             </Form.Item>
             <Form.Item 
               label="Turno"
-              name="turno" 
+              name="turno"
+           
               rules={[{ required: true, message: 'Campo obrigatório' }]}
             >
-              <Select placeholder="Selecione o turno" onChange={handleTurno}> 
+              <Select placeholder="Selecione o turno"  onChange={handleTurno}> 
                 <Select.Option value="manhã">Manhã</Select.Option>
                 <Select.Option value="tarde">Tarde</Select.Option>
                 <Select.Option value="noite">Noite</Select.Option>
@@ -132,7 +160,7 @@ function ReservaLabhab() {
               <Form.Item 
                 label="Horário Início" 
                 className="horario-item"
-                name="horarioInicio" 
+                name="hora_inicio" 
                 rules={[{ required: true, message: 'Campo obrigatório' }]}
               >
                 <Select placeholder="Selecione o horário de início">
@@ -146,7 +174,7 @@ function ReservaLabhab() {
               <Form.Item 
                 label="Horário Fim" 
                 className="horario-item"
-                name="horarioFim" 
+                name="hora_fim" 
                 rules={[{ required: true, message: 'Campo obrigatório' }]}
               >
                 <Select placeholder="Selecione o horário de fim">
@@ -159,7 +187,7 @@ function ReservaLabhab() {
               </Form.Item>
             </div>
           
-            <Form.Item label="Realizar a reserva até o final do semestre para todo o dia da semana selecionado?" name="validadeReserva">
+            <Form.Item label="Realizar a reserva até o final do semestre para todo o dia da semana selecionado ?" name="reserva_dia">
               <Select placeholder="Selecione o dia da semana">
                 <Select.Option value="segunda">Segunda</Select.Option>
                 <Select.Option value="terca">Terça</Select.Option>
@@ -167,11 +195,13 @@ function ReservaLabhab() {
                 <Select.Option value="quinta">Quinta</Select.Option>
                 <Select.Option value="sexta">Sexta</Select.Option>
                 <Select.Option value="sabado">Sábado</Select.Option>
+                <Select.Option value="domingo">Domingo</Select.Option>
               </Select>
             </Form.Item>
           </Col>
         </Row>
       </Form>
+      <SlideMenu/>
     </div>
   );
 }

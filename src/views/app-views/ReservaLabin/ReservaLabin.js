@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import '../Reservas/Reservas.css';
 import formAlert from '../../../assets/images/form-alert.png';
+import SlideMenu from '../../../layouts/Slidemenu/Slidemenu';
+import axios from 'axios';
 
 function ReservaLabin() {
   const [form] = Form.useForm();
@@ -12,10 +14,30 @@ function ReservaLabin() {
   const [showCard, setShowCard] = useState(false); 
   const [showSoftwareInfo, setShowSoftwareInfo] = useState(false); // Novo estado
 
-  const onFinish = (values) => {
-    console.log('Valores enviados:', values);
-    message.success('Reserva realizada com sucesso!');
+  const onFinish = async (values) => {
+    try {
+      const formattedValues = {
+        disciplina: values.disciplina,
+        data: values.data,
+        turno: values.turno,
+        software: values.software ? values.software.join(', ') : null,
+        equipamentos: values.equipamentos ? values.equipamentos.join(', ') : null,
+        hora_inicio: values.hora_inicio, 
+        hora_fim: values.hora_fim,       
+        observacao: values.observacao,
+        reserva_dia: values.reserva_dia,
+      };
+      const response = await axios.post('http://localhost:8080/reservas-labinfo/criar', formattedValues);
+      console.log('Resposta da API:', response.data);
+      message.success('Reserva realizada com sucesso!');
+      form.resetFields();
+    } catch (error) {
+      console.error('Erro ao criar reserva:', error.response ? error.response.data : error);
+      message.error('Erro ao realizar a reserva. Tente novamente.');
+    }
+   
   };
+
 
   const onFinishFailed = (errorInfo) => {
     console.log('Falha no envio:', errorInfo);
@@ -23,23 +45,23 @@ function ReservaLabin() {
 
   const handleTurno = (turno) => {
     let horarios = {
-      'manhã': ['08:00', '09:00', '10:00', '11:00', '12:00'],
+      'manhã': ['08:00', '09:00', '10:00', '11:00','12:00'],
       'tarde': ['13:00', '14:00', '15:00', '16:00', '17:00'],
       'noite': ['19:00', '20:00', '21:00', '22:00'],
     };
 
     setHorariosDisponiveis(horarios[turno] || []);
 
+    
     if (horarios[turno]) {
       form.setFieldsValue({
-        horarioInicio: horarios[turno][0],
-        horarioFim: horarios[turno][horarios[turno].length - 1],
+        hora_inicio: horarios[turno][0],
+        hora_fim: horarios[turno][horarios[turno].length - 1],
       });
     } else {
-      form.resetFields(['horarioInicio', 'horarioFim']);
+      form.resetFields(['hora_inicio', 'hora_fim']);
     }
   };
-
   const handleInfoClick = () => {
     setShowCard(!showCard); // Alterna a exibição do card de reservas
   };
@@ -84,49 +106,50 @@ function ReservaLabin() {
               label="Disciplina" 
               name="disciplina"
               rules={[{ required: true, message: <span>
-                Campo obrigatório <img src={formAlert} alt="Alerta" style={{ width: 10, marginLeft: 2 }} />
+                Campo obrigatório <img src={formAlert} 
+                alt="Alerta" style={{ width: 10, marginLeft: 2 }} />
               </span>}]}
             >
               <Input placeholder='Digite a disciplina' />
             </Form.Item>
             <Form.Item 
-              label="Software" 
-              name="software"
-            >
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <Select
-                  mode="tags"
-                  placeholder="Selecione o Software"
-                  allowClear
-                  style={{ flex: 1 }}
-                >
-                  <Select.Option value="visualcode">Visual Studio Code</Select.Option>
-                  <Select.Option value="anaconda">Anaconda</Select.Option>
-                  <Select.Option value="3dstudio">3D Studio Max</Select.Option>
-                  <Select.Option value="autocad">Auto CAD</Select.Option>
-                  <Select.Option value="revit">Revit</Select.Option>
-                  <Select.Option value="scateup">Scate UP</Select.Option>
-                </Select>
-                <InfoCircleOutlined 
-                  style={{ marginLeft: 10, fontSize: '20px', cursor: 'pointer' }} 
-                  onClick={handleSoftwareInfoClick} 
-                />
-              </div>
+  label="Software" 
+  name="software"
+>
+  <Select
+    mode="tags"
+    placeholder="Selecione o Software"
+    allowClear
+    style={{ flex: 1 }}
+  >
+    <Select.Option value="visualcode">Visual Studio Code</Select.Option>
+    <Select.Option value="anaconda">Anaconda</Select.Option>
+    <Select.Option value="3dstudio">3D Studio Max</Select.Option>
+    <Select.Option value="autocad">Auto CAD</Select.Option>
+    <Select.Option value="revit">Revit</Select.Option>
+    <Select.Option value="scateup">Scate UP</Select.Option>
+  </Select>
+</Form.Item>
+
               {showSoftwareInfo && (
                 <Card className="info-card" style={{ marginTop: 10 }}>
                   <p>Software é um conjunto de instruções que permitem que um computador realize tarefas específicas. Inclui aplicativos, sistemas operacionais e ferramentas de desenvolvimento.</p>
                   <Button type="primary" onClick={handleSoftwareInfoClick}>Fechar</Button>
                 </Card>
               )}
-            </Form.Item>
-            <Form.Item label="Equipamentos a ser utilizados na aula">
+           
+            <Form.Item 
+            label="Equipamentos a ser utilizados na aula"
+            name ="equipamentos">
               <Select mode="multiple" placeholder="Selecione os equipamentos">
                 <Select.Option value="roteador">Roteador TP-Link</Select.Option>
                 <Select.Option value="caixa_de_som">Caixa de som</Select.Option>
                 <Select.Option value="polycom">Polycom</Select.Option>
               </Select>
             </Form.Item>
-            <Form.Item label="Observação">
+            <Form.Item 
+            label="Observação"
+            name="observacao">
               <Input.TextArea rows={4} />
             </Form.Item>
             <Form.Item>
@@ -154,12 +177,12 @@ function ReservaLabin() {
                 <Select.Option value="tarde">Tarde</Select.Option>
                 <Select.Option value="noite">Noite</Select.Option>
               </Select>
-            </Form.Item>
+              </Form.Item>
             <div className="horario-container">
               <Form.Item 
                 label="Horário Início" 
                 className="horario-item"
-                name="horarioInicio" 
+                name="hora_inicio" 
                 rules={[{ required: true, message: 'Campo obrigatório' }]}
               >
                 <Select placeholder="Selecione o horário de início">
@@ -173,7 +196,7 @@ function ReservaLabin() {
               <Form.Item 
                 label="Horário Fim" 
                 className="horario-item"
-                name="horarioFim" 
+                name="hora_fim" 
                 rules={[{ required: true, message: 'Campo obrigatório' }]}
               >
                 <Select placeholder="Selecione o horário de fim">
@@ -186,7 +209,7 @@ function ReservaLabin() {
               </Form.Item>
             </div>
           
-            <Form.Item label="Realizar a reserva até o final do semestre para todo o dia da semana selecionado?" name="validadeReserva">
+            <Form.Item label="Realizar a reserva até o final do semestre para todo o dia da semana selecionado ?" name="reserva_dia">
               <Select placeholder="Selecione o dia da semana">
                 <Select.Option value="segunda">Segunda</Select.Option>
                 <Select.Option value="terca">Terça</Select.Option>
@@ -194,11 +217,13 @@ function ReservaLabin() {
                 <Select.Option value="quinta">Quinta</Select.Option>
                 <Select.Option value="sexta">Sexta</Select.Option>
                 <Select.Option value="sabado">Sábado</Select.Option>
+                <Select.Option value="domingo">Domingo</Select.Option>
               </Select>
             </Form.Item>
           </Col>
         </Row>
       </Form>
+      <SlideMenu/>
     </div>
   );
 }

@@ -1,21 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Table, Button, Dropdown, Menu, Checkbox } from 'antd';
 import Header from '../../../layouts/Header/Header';
 import { Link } from 'react-router-dom';
 import '../Reservas/Reservas.css';
+import SlideMenu from '../../../layouts/Slidemenu/Slidemenu';
+import axios from 'axios';
 
 const localOptions = [
-  { label: 'Salas', value: 'Salas' },
   { label: 'Laboratorios de Habilidades', value: 'Laboratorios de Habilidades' },
   { label: 'Laboratorio de Informatica', value: 'Laboratorio de Informatica' },
-  { label: 'Auditorio',value: 'Auditorio'}
+  { label: 'Salas e Auditorio', value: 'Salas e Auditorio' }
 ];
 
 const statusOptions = [
   { label: 'Ativo', value: 'Ativo' },
   { label: 'Em analise', value: 'Em analise' },
-
-
 ];
 
 function MinhasReservas() {
@@ -23,44 +22,21 @@ function MinhasReservas() {
   const [selectedStatus, setSelectedStatus] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [dataSource, setDataSource] = useState([]);
 
-  const dataSource = [
-    {
-      key: '1',
-      local: 'Sala',
-      status: 'Finalizado',
-      disciplina: 'Disciplina 1',
-      data_inicio: '2024-09-23',
-      data_fim: '2024-09-23',
-      localesc: 'Labin c20'
-    },
-    {
-      key: '2',
-      local: 'Laboratorio de Habilidades',
-      status: 'Ativo',
-      disciplina: 'Disciplina 2',
-      data_inicio: '2024-09-24',
-      data_fim: '2024-09-24',
-      localesc: 'Labhab c12'
-    },
-    {
-      key: '3',
-      local: 'Laboratorio de Informatica',
-      status: 'Em analise',
-      disciplina: 'Disciplina 3',
-      data_inicio: '2024-09-25',
-      data_fim: '2024-09-25',
-    },
-    {
-      key: '4',
-      local: 'Auditorio',
-      status: 'Reprovado',
-      disciplina: 'Disciplina 4',
-      data_inicio: '2024-09-25',
-      data_fim: '2024-09-25',
-    },
-    // Adicione mais itens conforme necessário para testar a paginação
-  ];
+  useEffect(() => {
+    const fetchReservas = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/reservas-gerais/listar');
+        setDataSource(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error('Erro ao buscar reservas:', error);
+      }
+    };
+
+    fetchReservas();
+  }, []);
 
   const filteredDataSource = dataSource.filter(item =>
     (selectedLocal.length === 0 || selectedLocal.includes(item.local)) &&
@@ -132,7 +108,16 @@ function MinhasReservas() {
       key: 'local',
       width: 186,
       align: 'center',
-      sorter: (a, b) => a.status.localeCompare(b.status),
+      render: (text, record) => {
+        // Verifica de qual tabela a reserva veio e renderiza o texto correspondente
+        if (record.nome_tabela === 'reserva_labinfo') {
+          return record.software; // Exibe 'software' para reservas de labinfo
+        } else if (record.nome_tabela === 'reserva_sala') {
+          return record.tipo_reserva; // Exibe 'equipamentos' para reservas de sala
+        }
+        return null; // Retorna null se não houver correspondência
+      },
+      sorter: (a, b) => (a.local || '').localeCompare(b.local || ''), // Use um valor padrão
     },
     {
       title: (
@@ -174,14 +159,16 @@ function MinhasReservas() {
       key: 'status',
       width: 60,
       align: 'center',
-      sorter: (a, b) => a.status.localeCompare(b.status),
+      sorter: (a, b) => (a.status || '').localeCompare(b.status || ''), // Use um valor padrão
     },
+
     {
-      title: 'Lab / Sala / Auditorio',
-      dataIndex: 'localesc',
+      title: 'Local disponibilizado',
+      dataIndex: 'local',
       key: 'localesc',
       width: 100,
       align: 'center',
+      
     },
     {
       title: 'Disciplina',
@@ -192,44 +179,48 @@ function MinhasReservas() {
     },
     {
       title: 'Informação',
-      dataIndex: 'informacao',
+      dataIndex: 'informacao', // Pode ser 'software' ou 'equipamentos'
       key: 'informacao',
       width: 60,
       align: 'center',
+      render: (text, record) => {
+        // Verifica de qual tabela a reserva veio e renderiza o texto correspondente
+        if (record.nome_tabela === 'reserva_labinfo') {
+          return record.software; // Exibe 'software' para reservas de labinfo
+        } else if (record.nome_tabela === 'reserva_sala') {
+          return record.equipamentos; // Exibe 'equipamentos' para reservas de sala
+        }
+        return null; // Retorna null se não houver correspondência
+      },
     },
     {
       title: 'Data Inicial',
-      dataIndex: 'data_inicio',
+      dataIndex: 'data',
       key: 'data_inicio',
       width: 120,
       align: 'center',
-      sorter: (a, b) => a.status.localeCompare(b.status),
     },
     {
       title: 'Data Final',
-      dataIndex: 'data_fim',
+      dataIndex: 'data',
       key: 'data_fim',
       width: 120,
       align: 'center',
-      sorter: (a, b) => a.status.localeCompare(b.status),
     },
     {
-        title: 'Hora Inicial',
-        dataIndex: 'hora_inicio',
-        key: 'hora_inicio',
-        width: 102,
-        align: 'center',
-      
-
-      },
-      {
-        title: 'Hora Final',
-        dataIndex: 'hora_fim',
-        key: 'hora_fim',
-        width: 102,
-        align: 'center',
-  
-      },
+      title: 'Hora Inicial',
+      dataIndex: 'hora_inicio',
+      key: 'hora_inicio',
+      width: 102,
+      align: 'center',
+    },
+    {
+      title: 'Hora Final',
+      dataIndex: 'hora_fim',
+      key: 'hora_fim',
+      width: 102,
+      align: 'center',
+    },
     {
       title: 'Opções',
       key: 'opcoes',
@@ -257,6 +248,7 @@ function MinhasReservas() {
 
   return (
     <div>
+      <SlideMenu />
       <Header />
       <div className="reservas-title">
         <p>

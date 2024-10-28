@@ -11,6 +11,7 @@ import si from "../../../assets/images/si.png";
 import { Link } from 'react-router-dom';
 import { Row, Col } from 'antd';
 import "./Reservas.css";
+import SlideMenu from "../../../layouts/Slidemenu/Slidemenu";
 
 function Reservas() {
   const [usuario, setUsuario] = useState(""); 
@@ -31,13 +32,13 @@ function Reservas() {
           <Col xs={24} md={12}>
             <div className="reservas-lista">
               <ul>
-                <Link to="/reserva_c">
+                <Link to="/reserva_sala">
                   <li>
                     <img src={rapa} alt="Reserva de sala" />
                     <p>Reserva de Sala de Aula, Auditórios, Plenário, Salão de Atos</p>
                   </li>
                 </Link>
-                <Link to="/reserva_b">
+                <Link to="/reserva_labin">
                   <li>
                     <img src={rli} alt="Laboratório de informática" />
                     <p>Reserva Laboratório de Informática</p>
@@ -69,7 +70,7 @@ function Reservas() {
           <Col xs={24} md={12}>
             <div className="reservas-lista">
               <ul>
-                <Link to="/reserva_a">
+                <Link to="/reserva_labhab">
                   <li>
                     <img src={rlh} alt="Laboratório de habilidades" />
                     <p>Reserva Laboratório de Habilidades</p>
@@ -104,7 +105,9 @@ function Reservas() {
           </Col>
         </Row>
       </div>
+      <SlideMenu/>
     </div>
+   
   );
 }
 
