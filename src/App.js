@@ -1,11 +1,6 @@
-// src/App.js
 import React from 'react';
-// index.js ou App.js
 import '@fortawesome/fontawesome-free/css/all.min.css';
-
-
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-// import SlideMenu from './layouts/Slidemenu/Slidemenu';
 import Reservas from './views/app-views/Reservas/Reservas';
 import Dashboard from './views/app-views/Dashboard/Dashboard';
 import MinhasReservas from './views/app-views/MinhasReservas/MinhasReservas';
@@ -17,27 +12,30 @@ import SoftwaresInstalados from './views/app-views/SoftwareInstalados/SoftwareIn
 import AdicionarSoftware from './views/app-views/AdicionarSoftware/AdicionarSoftware';
 import Agenda from './views/app-views/Agenda/Agenda';
 import Login from './views/app-views/Login/Login';
-
+import ProtectedRoute from './utils/Protectedroute';
 
 function App() {
+  const isAuthenticated = !!localStorage.getItem('token'); //
+
   return (
     <Router>
-      {/* <SlideMenu /> */}
       <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/reservas" element={<Reservas/>} />
-        <Route path="/reserva_labhab" element={<ReservaLabhab/>}/>
-        <Route path="/reserva_labin" element={<ReservaLabin/>}/>
-        <Route path="/reserva_sala" element={<ReservaSala/>}/>
-        <Route path="/minhas_reservas" element={<MinhasReservas/>}/>
-        <Route path="/aprov_reservas" element={<AprovReservas/>}/>
-        <Route path="/softwares_instalados" element={<SoftwaresInstalados/>}/>
-        <Route path="/adicionarSoftware" element={<AdicionarSoftware/>}/>
-        <Route path="/agenda" element={<Agenda/>}/>
-        <Route path="/login" element={<Login/>}/>
-        <Route path="/dashboard" element={<Dashboard/>}/>
+        <Route path="/login" element={<Login />} />
         
-        
+        {/* Rota protegida */}
+        <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/reservas" element={<Reservas />} />
+          <Route path="/reserva_labhab" element={<ReservaLabhab />} />
+          <Route path="/reserva_labin" element={<ReservaLabin />} />
+          <Route path="/reserva_sala" element={<ReservaSala />} />
+          <Route path="/minhas_reservas" element={<MinhasReservas />} />
+          <Route path="/aprov_reservas" element={<AprovReservas />} />
+          <Route path="/softwares_instalados" element={<SoftwaresInstalados />} />
+          <Route path="/adicionarSoftware" element={<AdicionarSoftware />} />
+          <Route path="/agenda" element={<Agenda />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Route>
       </Routes>
     </Router>
   );

@@ -7,7 +7,10 @@ import dayjs from 'dayjs';
 
 function Dashboard() {
   const daysOfWeek = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
-
+  const userId = localStorage.getItem('userId');
+  const token = localStorage.getItem('token');
+  console.log(userId)
+  console.log(token)
   
   const today = dayjs();
   const startOfWeek = today.startOf('week').add(1, 'day'); 

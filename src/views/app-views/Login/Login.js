@@ -2,12 +2,17 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Para redirecionar após o login
 import './Login.css'; 
 
+
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate(); // Hook para navegação
-
+  
+  const userId = localStorage.getItem('userId');
+  const token = localStorage.getItem('token');
+  console.log(userId)
+  console.log(token)
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -22,11 +27,15 @@ const Login = () => {
       });
 
       const data = await response.json();
-
+      console.log(data)
+      
       // Verifica se o login foi bem-sucedido
       if (response.ok) {
+        localStorage.setItem('token', data.token); // Armazena o token
+        localStorage.setItem('userId', data.id);
         // Redireciona para a página após login (exemplo: /dashboard)
         navigate('/dashboard');
+        
       } else {
         // Exibe mensagem de erro caso as credenciais sejam inválidas
         setErrorMessage(data.message || 'Email ou senha incorretos.');

@@ -8,6 +8,7 @@ import formAlert from '../../../assets/images/form-alert.png';
 import SlideMenu from '../../../layouts/Slidemenu/Slidemenu';
 
 function ReservaSala() {
+  
   const [form] = Form.useForm();
   const [horariosDisponiveis, setHorariosDisponiveis] = React.useState([]);
 
@@ -22,7 +23,8 @@ function ReservaSala() {
         hora_inicio: values.hora_inicio,
         hora_fim: values.hora_fim,
         observacao: values.observacao,
-        reserva_dia: values.reserva_dia
+        reserva_dia: values.reserva_dia,
+        id_usuario: localStorage.getItem('userId')
       };
   
       const response = await axios.post('http://localhost:8080/reservas-sala/criar', formattedValues);
@@ -34,7 +36,8 @@ function ReservaSala() {
       message.error('Erro ao realizar a reserva. Tente novamente.');
     }
   };
-  
+ 
+ 
   
 
   const onFinishFailed = (errorInfo) => {
@@ -50,7 +53,8 @@ function ReservaSala() {
 
     setHorariosDisponiveis(horarios[turno] || []);
 
-
+    
+   
     
     
     

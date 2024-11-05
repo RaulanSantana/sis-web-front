@@ -23,11 +23,16 @@ function MinhasReservas() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [dataSource, setDataSource] = useState([]);
+  const userId = localStorage.getItem('userId');
+  console.log(userId)
 
   useEffect(() => {
     const fetchReservas = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/reservas-gerais/listar');
+        const response = await axios.get('http://localhost:8080/reservas-gerais/listar', {
+          params: { userId: userId } // Substitua `seuUserId` pelo ID real do usuário
+        });
+        
         setDataSource(response.data);
         console.log(response.data);
       } catch (error) {
@@ -111,10 +116,13 @@ function MinhasReservas() {
       render: (text, record) => {
         // Verifica de qual tabela a reserva veio e renderiza o texto correspondente
         if (record.nome_tabela === 'reserva_labinfo') {
-          return record.software; // Exibe 'software' para reservas de labinfo
+          return record.id; 
         } else if (record.nome_tabela === 'reserva_sala') {
-          return record.tipo_reserva; // Exibe 'equipamentos' para reservas de sala
+          return record.tipo_reserva; 
+        }else if (record.nome_tabela === 'reserva_labhab') {
+          return record.laboratorio; 
         }
+        
         return null; // Retorna null se não houver correspondência
       },
       sorter: (a, b) => (a.local || '').localeCompare(b.local || ''), // Use um valor padrão
