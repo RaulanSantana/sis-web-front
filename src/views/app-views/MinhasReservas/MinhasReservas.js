@@ -1,21 +1,42 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Dropdown, Menu, Checkbox } from 'antd';
+import { Table, Button, Dropdown, Menu, Checkbox, Modal,message } from 'antd';
 import Header from '../../../layouts/Header/Header';
 import { Link } from 'react-router-dom';
 import '../Reservas/Reservas.css';
 import SlideMenu from '../../../layouts/Slidemenu/Slidemenu';
 import axios from 'axios';
+import statusEnum from '../../../enum/statusEnum';
+import moment from 'moment';
+
 
 const localOptions = [
-  { label: 'Laboratorios de Habilidades', value: 'Laboratorios de Habilidades' },
-  { label: 'Laboratorio de Informatica', value: 'Laboratorio de Informatica' },
-  { label: 'Salas e Auditorio', value: 'Salas e Auditorio' }
+  { label: 'Laboratorios de Habilidades', value: 'laboratorio de instrumental' },
+  { label: 'Laboratorio de Informatica', value: 'laboratorio de informatica' },
+  { label: 'Salas, Auditórios, Plenário, Salão de Atos', value: ['plenario', 'salao de atos', 'sala de aula', 'auditorios'] }
 ];
+
 
 const statusOptions = [
   { label: 'Ativo', value: 'Ativo' },
-  { label: 'Em analise', value: 'Em analise' },
+  { label: 'Aprovado', value: 'Aprovado'},
+  { label: 'Pendente', value: 'Pendente'},
+  { label: 'Rejeitado', value: 'Rejeitado'},
+  { label: 'Finalizado', value: 'Finalizado'},
 ];
+
+const showConfirm = (title, content, onConfirm) => {
+  Modal.confirm({
+    title,
+    content,
+    okText: 'Confirmar',
+    cancelText: 'Cancelar',
+    onOk() {
+      onConfirm();
+    },
+  });
+};
+
+
 
 function MinhasReservas() {
   const [selectedLocal, setSelectedLocal] = useState([]);
@@ -23,8 +44,11 @@ function MinhasReservas() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [dataSource, setDataSource] = useState([]);
+  const [refresh,setRefresh]= useState(0)
   const userId = localStorage.getItem('userId');
-  console.log(userId)
+
+
+  
 
   useEffect(() => {
     const fetchReservas = async () => {
@@ -34,19 +58,147 @@ function MinhasReservas() {
         });
         
         setDataSource(response.data);
-        console.log(response.data);
       } catch (error) {
         console.error('Erro ao buscar reservas:', error);
       }
     };
 
     fetchReservas();
-  }, []);
+  }, [refresh]);
 
-  const filteredDataSource = dataSource.filter(item =>
-    (selectedLocal.length === 0 || selectedLocal.includes(item.local)) &&
-    (selectedStatus.length === 0 || selectedStatus.includes(item.status))
-  );
+
+  const handleDelete = async (record) => {
+    showConfirm(
+      'Confirmar Exclusão',
+      'Você tem certeza que deseja excluir esta reserva?',
+      async () => {
+        try {
+          if (record.id_usuario === Number(userId) && (record.status === 1 || record.status === 4)) {
+            // Executando todas as requisições com Promise.allSettled para capturar o status de cada uma
+            const responses = await Promise.allSettled([
+              axios.delete(`http://localhost:8080/reservas-labinfo/deletar/${record.id}`, {
+                headers: {
+                  userId: userId,
+                },
+              }),
+              axios.delete(`http://localhost:8080/reservas-sala/deletar/${record.id}`, {
+                headers: {
+                  userId: userId,
+                },
+              }),
+              axios.delete(`http://localhost:8080/reservas-labhab/deletar/${record.id}`, {
+                headers: {
+                  userId: userId,
+                },
+              })
+            ]);
+  
+            // Verifica se pelo menos uma das requisições foi bem-sucedida
+            const atLeastOneSuccess = responses.some(response => response.status === 'fulfilled');
+  
+            if (atLeastOneSuccess) {
+              message.success('Reserva excluida com sucesso!');
+              console.log('Pelo menos uma das reservas foi excluída com sucesso!');
+              setRefresh(prev => prev + 1); // Atualiza se pelo menos uma requisição foi bem-sucedida
+            } else {
+              console.error('Falha ao excluir todas as reservas.');
+            }
+  
+            // Log detalhado para requisições que falharam
+            responses.forEach((response, index) => {
+              if (response.status === 'rejected') {
+                console.error(`Erro ao excluir na requisição ${index + 1}:`, response.reason);
+              }
+            });
+          } else {
+            console.error('Você não tem permissão para excluir esta reserva.');
+          }
+        } catch (error) {
+          console.error('Erro ao processar a exclusão:', error);
+        }
+      }
+    );
+  };
+  
+  
+
+  const handleFinalizar = async (record) => {
+    showConfirm(
+      'Confirmar Finalização',
+      'Você tem certeza que deseja finalizar esta reserva?',
+      async () => {
+        try {
+          if (record.id_usuario === Number(userId) && record.status === 5) {
+            // Fazendo as requisições para todas as tabelas com Promise.allSettled
+            const responses = await Promise.allSettled([
+              axios.put(`http://localhost:8080/reservas-labinfo/alterar/${record.id}`, {
+                status: 4,
+              }, {
+                headers: {
+                  userId: userId,
+                },
+              }),
+              axios.put(`http://localhost:8080/reservas-sala/alterar/${record.id}`, {
+                status: 4,
+              }, {
+                headers: {
+                  userId: userId,
+                },
+              }),
+              axios.put(`http://localhost:8080/reservas-labhab/alterar/${record.id}`, {
+                status: 4,
+              }, {
+                headers: {
+                  userId: userId,
+                },
+              })
+            ]);
+  
+            // Verifica se pelo menos uma das requisições foi bem-sucedida
+            const atLeastOneSuccess = responses.some(response => response.status === 'fulfilled');
+  
+            if (atLeastOneSuccess) {
+              message.success('Reserva finalizada com sucesso!');
+              console.log('Reserva finalizada com sucesso!');
+              setRefresh(prev => prev + 1); // Atualiza se pelo menos uma requisição foi bem-sucedida
+            } else {
+              console.error('Falha ao finalizar todas as reservas.');
+            }
+  
+            // Log detalhado para requisições que falharam
+            responses.forEach((response, index) => {
+              if (response.status === 'rejected') {
+                console.error(`Erro ao finalizar na requisição ${index + 1}:`, response.reason);
+              }
+            });
+          } else {
+            console.error('Você não tem permissão para finalizar esta reserva.');
+          }
+        } catch (error) {
+          console.error('Erro ao finalizar reserva:', error);
+        }
+      }
+    );
+  };
+  
+
+
+
+const filteredDataSource = dataSource.filter(item => 
+  // Verifica se algum local foi selecionado e se o valor do laboratório ou tipo_reserva está entre os locais selecionados
+  (selectedLocal.length === 0 || selectedLocal.some(local => {
+    // Verifica se local é uma string ou um array
+    if (Array.isArray(local)) {
+      return local.some(subLocal => item.tipo_reserva && subLocal === item.tipo_reserva);
+    } else {
+      return item.laboratorio === local || item.nome === local;
+    }
+  })) &&
+  
+  // Verifica se o status está entre os selecionados
+  (selectedStatus.length === 0 || selectedStatus.includes(statusEnum[item.status]))
+);
+
 
   const totalItems = filteredDataSource.length;
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -116,7 +268,7 @@ function MinhasReservas() {
       render: (text, record) => {
         // Verifica de qual tabela a reserva veio e renderiza o texto correspondente
         if (record.nome_tabela === 'reserva_labinfo') {
-          return record.id; 
+          return record.nome; 
         } else if (record.nome_tabela === 'reserva_sala') {
           return record.tipo_reserva; 
         }else if (record.nome_tabela === 'reserva_labhab') {
@@ -125,7 +277,7 @@ function MinhasReservas() {
         
         return null; // Retorna null se não houver correspondência
       },
-      sorter: (a, b) => (a.local || '').localeCompare(b.local || ''), // Use um valor padrão
+      // sorter: (a, b) => (String(a.status) || '').localeCompare(String(b.status) || '')
     },
     {
       title: (
@@ -167,7 +319,9 @@ function MinhasReservas() {
       key: 'status',
       width: 60,
       align: 'center',
-      sorter: (a, b) => (a.status || '').localeCompare(b.status || ''), // Use um valor padrão
+      render: (status) =>statusEnum[status],
+      sorter: (a, b) => (String(a.status) || '').localeCompare(String(b.status) || '')
+
     },
 
     {
@@ -207,6 +361,7 @@ function MinhasReservas() {
       key: 'data_inicio',
       width: 120,
       align: 'center',
+      render: (text) => moment(text).format('DD-MM-YYYY'), 
     },
     {
       title: 'Data Final',
@@ -214,6 +369,7 @@ function MinhasReservas() {
       key: 'data_fim',
       width: 120,
       align: 'center',
+      render: (text) => moment(text).format('DD-MM-YYYY'), 
     },
     {
       title: 'Hora Inicial',
@@ -221,6 +377,7 @@ function MinhasReservas() {
       key: 'hora_inicio',
       width: 102,
       align: 'center',
+      render: (text) => moment(text, 'HH:mm').format('HH:mm'),
     },
     {
       title: 'Hora Final',
@@ -228,26 +385,51 @@ function MinhasReservas() {
       key: 'hora_fim',
       width: 102,
       align: 'center',
+      render: (text) => moment(text, 'HH:mm').format('HH:mm'),
     },
     {
       title: 'Opções',
       key: 'opcoes',
       render: (_, record) => (
         <Dropdown 
-          overlay={
-            <Menu>
-              <Menu.Item key="edit">
-                <Button type="link">Editar</Button>
-              </Menu.Item>
-              <Menu.Item key="delete">
-                <Button type="link" danger>Excluir</Button>
-              </Menu.Item>
-            </Menu>
-          }
-          placement="bottomRight" 
+      overlay={
+        <Menu>
+         <Menu.Item key="edit">
+        {/* Link de edição passando o id para a página de edição */}
+        <Link to={`/reserva_labin/${record.id}`}>
+          <Button type="link">Editar</Button>
+        </Link>
+      </Menu.Item>
+
+          <Menu.Item key="delete">
+            <Button 
+              type="link" 
+              danger 
+              onClick={() => handleDelete(record) }
+            >
+              Excluir
+            </Button>
+          </Menu.Item>
+
+          <Menu.Item key="alterar">
+          {record.status === 5 && (
+         <Button 
+          type="link" 
+          danger
+          onClick={() => handleFinalizar(record)}
         >
-          <Button type="link">...</Button>
-        </Dropdown>
+          Finalizar
+          </Button>
+  )}
+</Menu.Item>
+
+          
+        </Menu>
+      }
+      placement="bottomRight" 
+    >
+      <Button type="link">...</Button>
+    </Dropdown>
       ),
       width: 40,
       align: 'center',

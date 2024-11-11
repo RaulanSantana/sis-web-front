@@ -7,6 +7,7 @@ import '../Reservas/Reservas.css';
 import formAlert from '../../../assets/images/form-alert.png';
 import SlideMenu from '../../../layouts/Slidemenu/Slidemenu';
 
+
 function ReservaSala() {
   
   const [form] = Form.useForm();
@@ -24,7 +25,8 @@ function ReservaSala() {
         hora_fim: values.hora_fim,
         observacao: values.observacao,
         reserva_dia: values.reserva_dia,
-        id_usuario: localStorage.getItem('userId')
+        id_usuario: localStorage.getItem('userId'),
+        
       };
   
       const response = await axios.post('http://localhost:8080/reservas-sala/criar', formattedValues);

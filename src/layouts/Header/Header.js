@@ -1,9 +1,12 @@
 import './Header.css';
-import { useNavigate } from 'react-router-dom'; // Importa o hook useNavigate
+import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Header({ setUsuario }) {
   const navigate = useNavigate(); // Inicializa o hook useNavigate
-
+  const [dataSource, setDataSource] = useState([]);
+  
   const handleSetUsuario = () => {
     const usuario = "usuariocomum"; 
     setUsuario(usuario); 
@@ -14,7 +17,28 @@ function Header({ setUsuario }) {
     localStorage.removeItem('userId');
     navigate('/login'); // Redireciona para a página de login
   };
+  const userId = localStorage.getItem('userId'); // Pega o ID do usuário do localStorage
+
+
+  useEffect(() => {
+    const fetchUsuario = async () => {
+      if (userId) {
+        try {
+          const response = await axios.get(`http://localhost:8080/login/logado`, {
+            params: { userId: userId } // Envia o userId como parâmetro de consulta
+          });
+          setDataSource(response.data);
+        } catch (error) {
+          console.error('Erro ao buscar usuário:', error);
+        }
+      }
+    };
   
+    fetchUsuario();
+  }, []);
+  
+
+
   return (
     <div className='cabecalho'>
       <i className="fas fa-search"></i>
@@ -23,11 +47,11 @@ function Header({ setUsuario }) {
         <i className="fas fa-envelope"></i>
         <i className="fas fa-bell"></i>
         <div className="user-info">
-          <p>Nome do Usuário</p>
-          <p className='mat'>Matrícula: 202012345</p>
+          <p>{dataSource.nome || 'Nome do Usuário'}</p> {/* Exibindo o nome do usuário */}
+          <p className='mat'>Matrícula: {dataSource.matricula || '202012345'}</p> {/* Exibindo a matrícula */}
         </div>
         <div>
-          <button onClick={handleLogout}>Sair</button> {/* Use button padrão aqui */}
+          <button onClick={handleLogout}>Sair</button>
         </div>
       </div>
     </div>

@@ -29,6 +29,9 @@ function App() {
           <Route path="/reserva_labhab" element={<ReservaLabhab />} />
           <Route path="/reserva_labin" element={<ReservaLabin />} />
           <Route path="/reserva_sala" element={<ReservaSala />} />
+          <Route path="/reserva_labhab/:id" element={<ReservaLabhab />} />
+          <Route path="/reserva_labin/:id" element={<ReservaLabin />} />
+          <Route path="/reserva_sala/:id" element={<ReservaSala />} />
           <Route path="/minhas_reservas" element={<MinhasReservas />} />
           <Route path="/aprov_reservas" element={<AprovReservas />} />
           <Route path="/softwares_instalados" element={<SoftwaresInstalados />} />

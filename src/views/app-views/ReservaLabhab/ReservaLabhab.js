@@ -9,6 +9,8 @@ import SlideMenu from '../../../layouts/Slidemenu/Slidemenu';
 import formAlert from '../../../assets/images/form-alert.png';
 import axios from 'axios';
 
+
+
 function ReservaLabhab() {
   const [form] = Form.useForm();
   const [horariosDisponiveis, setHorariosDisponiveis] = React.useState([]);
@@ -56,7 +58,8 @@ function ReservaLabhab() {
         hora_fim: values.hora_fim,       
         observacao: values.observacao,
         reserva_dia: values.reserva_dia,
-        id_usuario: localStorage.getItem('userId')
+        id_usuario: localStorage.getItem('userId'),
+       
       };
       const response = await axios.post('http://localhost:8080/reservas-labhab/criar', formattedValues);
       console.log('Resposta da API:', response.data);

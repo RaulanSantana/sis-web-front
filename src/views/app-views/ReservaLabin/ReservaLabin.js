@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams,useNavigate } from 'react-router-dom';
 import { Form, Input, Select, Button, message, Row, Col, Card } from 'antd';
 import Header from '../../../layouts/Header/Header';
 import { Link } from 'react-router-dom';
@@ -7,12 +8,44 @@ import '../Reservas/Reservas.css';
 import formAlert from '../../../assets/images/form-alert.png';
 import SlideMenu from '../../../layouts/Slidemenu/Slidemenu';
 import axios from 'axios';
+import moment from 'moment';
 
-function ReservaLabin() {
-  const [form] = Form.useForm();
+const EditForm = () => {
+  const navigate = useNavigate();
+  const { id } = useParams();  // Aqui pegamos o valor do parâmetro `id` da URL
   const [horariosDisponiveis, setHorariosDisponiveis] = useState([]);
   const [showCard, setShowCard] = useState(false); 
   const [showSoftwareInfo, setShowSoftwareInfo] = useState(false); // Novo estado
+  const [form] = Form.useForm();  // Inicializando o hook useForm
+  const [isEdit, setIsEdit] = useState(false); // Novo estado para identificar se é edição ou criação
+
+
+
+  useEffect(() => {
+    if (id) {
+      setIsEdit(true); // Se o `id` estiver presente, estamos editando
+      axios.put(`http://localhost:8080/reservas-labinfo/editar/${id}`)
+        .then(response => {
+       
+          form.setFieldsValue({
+            disciplina: response.data.disciplina,
+            data: moment(response.data.data).format('YYYY-MM-DD'),
+            turno: response.data.turno,
+            software: response.data.software ? response.data.software.split(', ') : [],
+            equipamentos: response.data.equipamentos ? response.data.equipamentos.split(', ') : [],
+            hora_inicio: response.data.hora_inicio,
+            hora_fim: response.data.hora_fim,
+            observacao: response.data.observacao,
+            reserva_dia: response.data.reserva_dia,
+          });
+  
+          // Configura horários disponíveis dependendo do turno
+          handleTurno(response.data.turno);
+        })
+        .catch(error => console.error('Erro ao carregar os dados:', error));
+    }
+  }, [id]);  // O efeito só será executado novamente quando o `id` mudar
+  
 
   const onFinish = async (values) => {
     try {
@@ -26,19 +59,28 @@ function ReservaLabin() {
         hora_fim: values.hora_fim,       
         observacao: values.observacao,
         reserva_dia: values.reserva_dia,
-        id_usuario: localStorage.getItem('userId')
+        id_usuario: localStorage.getItem('userId'),
       };
-      const response = await axios.post('http://localhost:8080/reservas-labinfo/criar', formattedValues);
+
+      let response;
+      if (isEdit) {
+        // Se for edição, use PUT
+        response = await axios.put(`http://localhost:8080/reservas-labinfo/editar/${id}`, formattedValues);
+        message.success('Reserva editada com sucesso!');
+        navigate('/minhas_reservas');
+      } else {
+        // Se for criação, use POST
+        response = await axios.post('http://localhost:8080/reservas-labinfo/criar', formattedValues);
+        message.success('Reserva realizada com sucesso!');
+      }
+      
       console.log('Resposta da API:', response.data);
-      message.success('Reserva realizada com sucesso!');
       form.resetFields();
     } catch (error) {
-      console.error('Erro ao criar reserva:', error.response ? error.response.data : error);
+      console.error('Erro ao realizar a reserva:', error.response ? error.response.data : error);
       message.error('Erro ao realizar a reserva. Tente novamente.');
     }
-   
   };
-
 
   const onFinishFailed = (errorInfo) => {
     console.log('Falha no envio:', errorInfo);
@@ -53,7 +95,6 @@ function ReservaLabin() {
 
     setHorariosDisponiveis(horarios[turno] || []);
 
-    
     if (horarios[turno]) {
       form.setFieldsValue({
         hora_inicio: horarios[turno][0],
@@ -63,6 +104,7 @@ function ReservaLabin() {
       form.resetFields(['hora_inicio', 'hora_fim']);
     }
   };
+
   const handleInfoClick = () => {
     setShowCard(!showCard); // Alterna a exibição do card de reservas
   };
@@ -154,7 +196,15 @@ function ReservaLabin() {
               <Input.TextArea rows={4} />
             </Form.Item>
             <Form.Item>
-              <Button type="primary" htmlType="submit">Realizar Reserva</Button>
+
+            <Button type="primary" htmlType="submit">
+            {isEdit ? "Salvar" : "Realizar Reserva"}
+            <Link to={'/minhas_reservas'}> </Link>
+          </Button>
+
+
+          <Link to={'/minhas_reservas'}> </Link>
+
             </Form.Item>
           </Col>
 
@@ -227,6 +277,6 @@ function ReservaLabin() {
       <SlideMenu/>
     </div>
   );
-}
+};
 
-export default ReservaLabin;
+export default EditForm;
