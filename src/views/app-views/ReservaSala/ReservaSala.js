@@ -1,46 +1,87 @@
 import React from 'react';
-import { Form, Input, Select, Button, message, Row, Col } from 'antd';
+import { useState, useEffect } from 'react';
+import { Form, Select, Input, Button, message, Row, Col} from 'antd';
+import { useParams,useNavigate } from 'react-router-dom';
 import Header from '../../../layouts/Header/Header';
 import { Link } from 'react-router-dom';
-import axios from 'axios'; 
-import '../Reservas/Reservas.css';
-import formAlert from '../../../assets/images/form-alert.png';
 import SlideMenu from '../../../layouts/Slidemenu/Slidemenu';
+import formAlert from '../../../assets/images/form-alert.png';
+import axios from 'axios';
+import moment from 'moment'; 
 
 
 function ReservaSala() {
+
+  const navigate = useNavigate();
+  const { id } = useParams();  // Aqui pegamos o valor do parâmetro id da URL
+  const [horariosDisponiveis, setHorariosDisponiveis] = useState([]);
+  const [form] = Form.useForm();  // Inicializando o hook useForm
+  const [isEdit, setIsEdit] = useState(false); // Novo estado para identificar se é edição ou criação
   
-  const [form] = Form.useForm();
-  const [horariosDisponiveis, setHorariosDisponiveis] = React.useState([]);
+  
+
+  useEffect(() => {
+    if (id) {
+      setIsEdit(true); 
+      axios.put(http://localhost:8080/reservas-sala/editar/${id})
+        .then(response => {
+       
+          form.setFieldsValue({
+            disciplina: response.data.disciplina,
+            tipo_reserva: response.data.tipo_reserva,
+            equipamentos: response.data.equipamentos,
+            data: moment(response.data.data).format('YYYY-MM-DD'),
+            turno: response.data.turno,
+            hora_inicio: response.data.hora_inicio,
+            hora_fim: response.data.hora_fim,
+            observacao: response.data.observacao,
+            reserva_dia: response.data.reserva_dia,
+          });
+  
+          // Configura horários disponíveis dependendo do turno
+          handleTurno(response.data.turno);
+        })
+        .catch(error => console.error('Erro ao carregar os dados:', error));
+    }
+  }, [id]);  // O efeito só será executado novamente quando o id mudar
+  
 
   const onFinish = async (values) => {
     try {
       const formattedValues = {
         disciplina: values.disciplina,
+        tipo_reserva: values.tipo_reserva,
+        equipamentos: Array.isArray(values.equipamentos)
+        ? values.equipamentos.join(', ') // Converte array para string
+        : values.equipamentos,
         data: values.data,
         turno: values.turno,
-        tipo_reserva: values.tipo_reserva, 
-        equipamentos: values.equipamentos ? values.equipamentos.join(', ') : null,
-        hora_inicio: values.hora_inicio,
-        hora_fim: values.hora_fim,
+        hora_inicio: values.hora_inicio, 
+        hora_fim: values.hora_fim,       
         observacao: values.observacao,
         reserva_dia: values.reserva_dia,
         id_usuario: localStorage.getItem('userId'),
-        
       };
-  
-      const response = await axios.post('http://localhost:8080/reservas-sala/criar', formattedValues);
+
+      let response;
+      if (isEdit) {
+        // Se for edição, use PUT
+        response = await axios.put(http://localhost:8080/reservas-sala/editar/${id}, formattedValues);
+        message.success('Reserva editada com sucesso!');
+        navigate('/minhas_reservas');
+      } else {
+        // Se for criação, use POST
+        response = await axios.post('http://localhost:8080/reservas-sala/criar', formattedValues);
+        message.success('Reserva realizada com sucesso!');
+      }
+      
       console.log('Resposta da API:', response.data);
-      message.success('Reserva realizada com sucesso!');
       form.resetFields();
     } catch (error) {
-      console.error('Erro ao criar reserva:', error.response ? error.response.data : error);
+      console.error('Erro ao realizar a reserva:', error.response ? error.response.data : error);
       message.error('Erro ao realizar a reserva. Tente novamente.');
     }
   };
- 
- 
-  
 
   const onFinishFailed = (errorInfo) => {
     console.log('Falha no envio:', errorInfo);
@@ -56,8 +97,7 @@ function ReservaSala() {
     setHorariosDisponiveis(horarios[turno] || []);
 
     
-   
-    
+  
     
     
     if (horarios[turno]) {
@@ -201,4 +241,4 @@ function ReservaSala() {
   );
 }
 
-export default ReservaSala;
+export default ReservaSala; 
