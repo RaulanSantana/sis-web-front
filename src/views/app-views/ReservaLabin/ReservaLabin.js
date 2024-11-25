@@ -12,7 +12,7 @@ import moment from 'moment';
 
 const ReservaLabin = () => {
   const navigate = useNavigate();
-  const { id } = useParams();  // Aqui pegamos o valor do parâmetro `id` da URL
+  const { id } = useParams();  // Aqui pegamos o valor do parâmetro id da URL
   const [horariosDisponiveis, setHorariosDisponiveis] = useState([]);
   const [showCard, setShowCard] = useState(false); 
   const [showSoftwareInfo, setShowSoftwareInfo] = useState(false); // Novo estado
@@ -23,8 +23,8 @@ const ReservaLabin = () => {
 
   useEffect(() => {
     if (id) {
-      setIsEdit(true); // Se o `id` estiver presente, estamos editando
-      axios.put(`http://localhost:8080/reservas-labinfo/editar/${id}`)
+      setIsEdit(true); // Se o id estiver presente, estamos editando
+      axios.put(http://localhost:8080/reservas-labinfo/editar/${id})
         .then(response => {
        
           form.setFieldsValue({
@@ -44,7 +44,7 @@ const ReservaLabin = () => {
         })
         .catch(error => console.error('Erro ao carregar os dados:', error));
     }
-  }, [id]);  // O efeito só será executado novamente quando o `id` mudar
+  }, [id]);  // O efeito só será executado novamente quando o id mudar
   
 
   const onFinish = async (values) => {
@@ -65,7 +65,7 @@ const ReservaLabin = () => {
       let response;
       if (isEdit) {
         // Se for edição, use PUT
-        response = await axios.put(`http://localhost:8080/reservas-labinfo/editar/${id}`, formattedValues);
+        response = await axios.put(http://localhost:8080/reservas-labinfo/editar/${id}, formattedValues);
         message.success('Reserva editada com sucesso!');
         navigate('/minhas_reservas');
       } else {
