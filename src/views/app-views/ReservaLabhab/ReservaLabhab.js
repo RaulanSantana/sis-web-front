@@ -9,7 +9,7 @@ import SlideMenu from '../../../layouts/Slidemenu/Slidemenu';
 import formAlert from '../../../assets/images/form-alert.png';
 import axios from 'axios';
 
-//////////////// 
+////////
 
 function ReservaLabhab() {
   const [form] = Form.useForm();
